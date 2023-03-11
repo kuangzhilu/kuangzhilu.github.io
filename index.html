@@ -1,0 +1,285 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Monkey</title>
+<link rel="shortcut icon" href="https://kuangzhilu.github.io/favicon.ico?v=1678517599135">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://kuangzhilu.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Monkey - Atom Feed" href="https://kuangzhilu.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="温故而知新" />
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://kuangzhilu.github.io">
+  <img class="avatar" src="https://kuangzhilu.github.io/images/avatar.png?v=1678517599135" alt="">
+  </a>
+  <h1 class="site-title">
+    Monkey
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+    
+        <div class="post-container">
+  
+    <article class="post">
+      <a href="https://kuangzhilu.github.io/post/test/">
+        <h2 class="post-title">CloudNative</h2>
+      </a>
+      <div class="post-info">
+        <span>
+          2023-03-11
+        </span>
+        <span>
+          5 min read
+        </span>
+        
+      </div>
+      
+      <div class="post-abstract">
+        <h2 id="安装helm">安装Helm</h2>
+<h3 id="安装kubectl">安装kubectl</h3>
+<p>下载kubectl工具</p>
+<pre><code class="language-shell">curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.4/bin/linux/amd64/kubectl
+</code></pre>
+<p>安装kubectl工具</p>
+<pre><code class="language-shell">chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version
+</code></pre>
+<p>配置 Kubeconfig</p>
+<pre><code class="language-shell">将kubeconfig配置保存到~/.kube/config
+export KUBECONFIG=~/.kube/config
+kubectl config get-contexts
+kubectl get node
+</code></pre>
+<p>安装helm</p>
+<pre><code>https://helm.sh/docs/intro/install/
+mv helm /usr/local/bin/helm
+</code></pre>
+<p>测试helm</p>
+<pre><code class="language-shell">helm list
+</code></pre>
+<h2 id="基础使用">基础使用</h2>
+<pre><code>实用命令操作参考文档
+https://www.cnblogs.com/hahaha111122222/p/16113138.html
+</code></pre>
+<pre><code class="language-shell">helm install my-spinnaker opsmx/spinnaker -n spinnaker -f values.yaml 
+
+helm fetch stable/nfs-client-provisioner
+
+helm install nfs-client-provisioner nfs-client-provisioner-1.2.11.tgz
+#搜索仓库所有charts
+helm search repo argo
+#拉取chart
+helm pull argo/argo-cd
+#指定版本
+helm install adwerx/awx --version 1.0.0
+
+#卸载并保留一些数据
+helm uninstall harbor -n harbor --keep-history
+</code></pre>
+<h3 id="更新spinnaker">更新spinnaker</h3>
+<p>helm upgrade --values values.yaml --install my-spinnaker opsmx/spinnaker -n spinnaker</p>
+<h3 id="删除spinnaker">删除spinnaker</h3>
+<p>helm delete --purge my-spinnaker</p>
+<h3 id="查看repo中的资源">查看repo中的资源</h3>
+<p>helm search repo argo</p>
+<h2 id="版本">版本</h2>
+<h3 id="自动更新">自动更新</h3>
+<p>设置版本号为X</p>
+<h2 id="插件">插件</h2>
+<h3 id="diff插件">diff插件</h3>
+<pre><code>安装指导文档
+https://www.coderdocument.com/docs/helm/v2/using_helm/plugins.html
+</code></pre>
+<pre><code>插件安装
+https://github.com/databus23/helm-diff
+下载的包
+https://github.com/databus23/helm-diff/releases/latest/download/helm-diff-linux-amd64.tgz
+</code></pre>
+<h2 id="下载chart">下载Chart</h2>
+<pre><code>https://github.com/bitnami/charts/tree/main/bitnami
+</code></pre>
+<h2 id="helm部署资源">Helm部署资源</h2>
+<h3 id="部署prometheus-operator">部署prometheus-operator</h3>
+<pre><code>kubectl create ns monitoring
+https://github.com/prometheus-community/helm-charts/releases
+helm install prometheus-operator kube-prometheus-stack-43.2.1.tgz -n monitoring
+</code></pre>
+<p>修改grafana服务类型</p>
+<pre><code>方案一：
+kubectl edit deploy prometheus-operator-grafana -n monitoring
+直接修改：type: NodePort
+方案二：
+kube-prometheus-stack/charts/grafana/values.yaml
+直接修改：type: NodePort
+</code></pre>
+<p>查看grafana密码并使用base64解密</p>
+<pre><code>kubectl get secrets prometheus-operator-grafana -o yaml -n monitoring
+</code></pre>
+<p>参考文档</p>
+<pre><code>安装文档
+https://www.cnblogs.com/zhangpeiyao/p/16529935.html
+补充文档
+https://www.jianshu.com/p/02105a446072
+https://zhuanlan.zhihu.com/p/588941681
+报错参考和查看grafana密码
+https://www.cnblogs.com/liruilong/p/15808679.html
+
+</code></pre>
+<p>排错</p>
+<p>prometheus-node-exporter起不来问题</p>
+<pre><code>https://github.com/kubesphere/kubesphere/issues/4653
+hostRootFsMount:
+  enabled: false
+</code></pre>
+<p>配置minio</p>
+<pre><code>https://blog.csdn.net/u010533742/article/details/124469124
+</code></pre>
+<h3 id="部署awx">部署awx</h3>
+<pre><code>https://github.com/ansible/awx-operator#helm-install-on-existing-cluster
+</code></pre>
+<pre><code>参考文档
+https://developer.aliyun.com/article/1050885?accounttraceid=9f8b51b7e7074a3a9029d4856d76a36eeqys
+</code></pre>
+<p>排错，pgsql链接问题，密码不正确额</p>
+<pre><code>https://stackoverflow.com/questions/71327259/kubernetes-awx-operator-hanging-on-managed-database-migration
+awx-manage migrate --noinput
+正确解决方案
+https://github.com/ansible/awx-operator/issues/142
+由于重复部署，pvc挂载没有删除，导致使用了原先的pvc中挂载的pgsql用户密码
+issue resolved, there has been an old pvc still around. after removing it things work as expected
+</code></pre>
+<p>删除原先的pvc</p>
+<pre><code>kubectl delete pvc postgres-13-awx-postgres-13-0 -n awx
+</code></pre>
+<h3 id="部署harbor">部署harbor</h3>
+<figure data-type="image" tabindex="1"><img src="https://picgo-1258172409.cos.ap-guangzhou.myqcloud.com/image/Helm.md/image-20230104200606390.png" alt="image-20230104200606390" loading="lazy"></figure>
+<p>本地添加harbor的helm源</p>
+<pre><code>helm repo add --username=admin --password=Harbor12345 myrepo http://127.0.0.1:30002/harbor/projects/2/helm-charts
+</code></pre>
+<h3 id="部署traefik">部署traefik</h3>
+<pre><code>https://doc.traefik.io/traefik/getting-started/install-traefik/#use-the-helm-chart
+</code></pre>
+<pre><code>helm install traefik traefik/ -n traefik
+kubectl port-forward $(kubectl get pods --selector &quot;app.kubernetes.io/name=traefik&quot; --output=name -n traefik) 9000:9000 -n traefik
+kubectl port-forward $(kubectl get pods --selector &quot;app.kubernetes.io/name=traefik&quot; --output=name) 9000:9000 &amp;
+</code></pre>
+<pre><code>#使用文档
+尽量保持traefik原生的配置，文档中只截取whoami的配置即可。
+https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/
+</code></pre>
+<h3 id="部署chartmuseum">部署chartmuseum</h3>
+<pre><code>https://blog.csdn.net/m0_47406832/article/details/127007708
+https://chartmuseum.com/docs/
+https://github.com/chartmuseum/charts/tree/main/src/chartmuseum
+</code></pre>
+<p>注意需要先开启api</p>
+<pre><code>env.open.DISABLE_API=false
+</code></pre>
+<p>上传</p>
+<pre><code>helm package mychart/ --version 0.1.1
+curl --data-binary &quot;@chartmuseum-3.9.2.tgz&quot; http://127.0.0.1:8080/api/charts
+</code></pre>
+
+      </div>
+    </article>
+  
+    <article class="post">
+      <a href="https://kuangzhilu.github.io/post/hello-gridea/">
+        <h2 class="post-title">Hello Gridea</h2>
+      </a>
+      <div class="post-info">
+        <span>
+          2018-12-12
+        </span>
+        <span>
+          2 min read
+        </span>
+        
+          <a href="https://kuangzhilu.github.io/tag/XL--peHx_/" class="post-tag">
+            # Gridea
+          </a>
+        
+      </div>
+      
+        <a href="https://kuangzhilu.github.io/post/hello-gridea/" class="post-feature-image" style="background-image: url('https://kuangzhilu.github.io/post-images/hello-gridea.png')">
+        </a>
+      
+      <div class="post-abstract">
+        <p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+
+      </div>
+    </article>
+  
+</div>
+
+    
+        <div class="pagination-container">
+  
+  
+</div>
+
+    
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://kuangzhilu.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+  </body>
+</html>
